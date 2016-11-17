@@ -52,7 +52,7 @@ public class MapsFragment extends Fragment {
                                     //mMap.setPadding(0,findViewById(R.id.toolbar).getHeight(),0,0);
                                     //mMap.setPadding(0,(int)(56 * MapsFragment.super.getContext().getResources().getDisplayMetrics().density + 0.5f),0,0);
 
-                                    if (ContextCompat.checkSelfPermission(MapsFragment.super.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                                    /*if (ContextCompat.checkSelfPermission(MapsFragment.super.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                                             == PackageManager.PERMISSION_GRANTED) {
                                         mMap.setMyLocationEnabled(true);
                                     } else {
@@ -62,7 +62,7 @@ public class MapsFragment extends Fragment {
                                             mMap.setMyLocationEnabled(true);
                                         }
                                         else Toast.makeText(MapsFragment.super.getContext(),"permission required to run app",Toast.LENGTH_SHORT);
-                                    }
+                                    }*/
 
 
                                     mMap.setMyLocationEnabled(true);
