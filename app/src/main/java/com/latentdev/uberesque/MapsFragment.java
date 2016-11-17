@@ -7,7 +7,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -15,7 +14,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -36,7 +34,7 @@ public class MapsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View rootView = inflater.inflate(R.layout.activity_maps, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_maps, container, false);
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
 
@@ -52,7 +50,7 @@ public class MapsFragment extends Fragment {
                                 public void onMapReady(GoogleMap googleMap) {
                                     mMap = googleMap;
                                     //mMap.setPadding(0,findViewById(R.id.toolbar).getHeight(),0,0);
-
+                                    //mMap.setPadding(0,(int)(56 * MapsFragment.super.getContext().getResources().getDisplayMetrics().density + 0.5f),0,0);
 
                                     if (ContextCompat.checkSelfPermission(MapsFragment.super.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                                             == PackageManager.PERMISSION_GRANTED) {
@@ -68,7 +66,7 @@ public class MapsFragment extends Fragment {
 
 
                                     mMap.setMyLocationEnabled(true);
-                                    mMap.setPadding(0,MapsFragment.super.getActivity().findViewById(R.id.toolbar).getHeight(),0,0);
+
                                     LocationManager locationManager = (LocationManager) MapsFragment.super.getContext().getSystemService(LOCATION_SERVICE);
                                     Criteria criteria = new Criteria();
                                     String provider = locationManager.getBestProvider(criteria, true);
@@ -76,7 +74,8 @@ public class MapsFragment extends Fragment {
 
                                     LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
                                     mMap.addMarker(new MarkerOptions().position(myLocation).title("location"));
-                                    mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));}
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
+                                }
 /*
         */
 
@@ -92,4 +91,7 @@ public class MapsFragment extends Fragment {
      */
 
 
-});return rootView; }}
+}
+        );
+        return rootView;
+    }}
