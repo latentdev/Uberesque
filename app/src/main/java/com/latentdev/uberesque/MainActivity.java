@@ -1,6 +1,5 @@
 package com.latentdev.uberesque;
 
-import android.*;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.pm.PackageManager;
@@ -100,17 +99,20 @@ public class MainActivity extends AppCompatActivity{
                 != PackageManager.PERMISSION_GRANTED) {
 
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED)
+            {
+                //this creates the fragment that holds our map
+                Fragment fragment = Fragment.instantiate(this, MapsFragment.class.getName());
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.container, fragment);
+                ft.commit();
+            }
+
         }
 
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED)
-        {
-            //this creates the fragment that holds our map
-            Fragment fragment = Fragment.instantiate(this, MapsFragment.class.getName());
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
-            ft.replace(R.id.container, fragment);
-            ft.commit();
-        }
+
     }
 
     @Override
