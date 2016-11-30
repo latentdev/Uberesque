@@ -7,6 +7,7 @@ package com.latentdev.uberesque;
 public class User {
 
     public int UserID;
+    public String Email;
     public String UserName;
     public String Password;
     public String FirstName;

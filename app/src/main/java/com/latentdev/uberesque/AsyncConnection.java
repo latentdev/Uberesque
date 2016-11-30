@@ -1,6 +1,7 @@
 package com.latentdev.uberesque;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -58,6 +59,7 @@ import java.net.URL;
                     if (jsonResponse.getBoolean("success")==true) {
                         response = new Response();
                         response.user.UserID = jsonResponse.getJSONObject("user").getInt("UserID");
+                        response.user.Email = jsonResponse.getJSONObject("user").getString("Email");
                         response.user.UserName = jsonResponse.getJSONObject("user").getString("UserName");
                         response.user.Password = jsonResponse.getJSONObject("user").getString("Password");
                         response.user.FirstName = jsonResponse.getJSONObject("user").getString("FirstName");
@@ -65,6 +67,7 @@ import java.net.URL;
                         response.user.Driver = jsonResponse.getJSONObject("user").getBoolean("Driver");
                         if (response.user.Driver == true) {
                             response.vehicle.Color = jsonResponse.getJSONObject("vehicle").getString("Color");
+                            response.vehicle.Year = jsonResponse.getJSONObject("vehicle").getInt("Year");
                             response.vehicle.Make = jsonResponse.getJSONObject("vehicle").getString("Make");
                             response.vehicle.Model = jsonResponse.getJSONObject("vehicle").getString("Model");
                             response.vehicle.Plate = jsonResponse.getJSONObject("vehicle").getString("Plate");
@@ -75,6 +78,7 @@ import java.net.URL;
                     else
                     {
                         Toast.makeText(context, jsonResponse.getString("error"), Toast.LENGTH_LONG).show();
+                        delegate.Reset();
                     }
                 }catch(Exception e)
                 {

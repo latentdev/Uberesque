@@ -6,6 +6,7 @@ package com.latentdev.uberesque;
 
 public class Vehicle {
     public String Color;
+    public int Year;
     public String Make;
     public String Model;
     public String Plate;

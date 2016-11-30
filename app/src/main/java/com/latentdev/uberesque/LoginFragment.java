@@ -138,16 +138,8 @@ public class LoginFragment extends Fragment implements IAccessResponse{
         String url = "http://uberesque.azurewebsites.net/api/Account/Login?username="+username.getText().toString()+"&password="+password.getText().toString();
         AsyncConnection async = new AsyncConnection(this.getContext(),this.getActivity());
         async.delegate = this;
-        try {
-            String string = async.execute(url).get();
-        }catch (InterruptedException e)
-        {
+        async.execute(url);
 
-        }
-        catch(ExecutionException f)
-        {
-
-        }
         //progressDialog.hide();
         btn_login.setEnabled(true);
 
@@ -179,7 +171,7 @@ public class LoginFragment extends Fragment implements IAccessResponse{
     }
     public void onLoginFailed() {
         Toast.makeText(super.getContext(), "Login failed", Toast.LENGTH_LONG).show();
-
+        progressDialog.hide();
         btn_login.setEnabled(true);
     }
     @Override
@@ -187,6 +179,13 @@ public class LoginFragment extends Fragment implements IAccessResponse{
     {
             mListener.onFragmentInteraction(asyncResult);
             progressDialog.hide();
+    }
+
+    @Override
+    public void Reset()
+    {
+        progressDialog.hide();
+        btn_login.setEnabled(true);
     }
 
 
