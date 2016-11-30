@@ -1,5 +1,7 @@
 package com.latentdev.uberesque;
 
+import android.*;
+import android.Manifest;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.pm.PackageManager;
@@ -24,8 +26,10 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.json.JSONObject;
 
-public class MainActivity extends AppCompatActivity{
+
+public class MainActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener{
 
     private String[] mMenuItems;
     private DrawerLayout mDrawerLayout;
@@ -34,13 +38,16 @@ public class MainActivity extends AppCompatActivity{
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
     private LinearLayout DrawerLinear;
+    public User user;
+    public Vehicle vehicle;
+    public Response response;
 
     //this sets up what to do when our activity is first created
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        permissions();
         //set our toolbar up
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -86,6 +93,7 @@ public class MainActivity extends AppCompatActivity{
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
+/*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,14 +101,15 @@ public class MainActivity extends AppCompatActivity{
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
+        });*/
 
+/**
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+        else if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED)
             {
                 //this creates the fragment that holds our map
@@ -108,13 +117,36 @@ public class MainActivity extends AppCompatActivity{
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.container, fragment);
                 ft.commit();
-            }
-
-        }
-
-
+            }*/
+        Fragment fragment = Fragment.instantiate(this, LoginFragment.class.getName());
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.container, fragment);
+        ft.commit();
     }
+    public void permissions()
+    {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
 
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET}, 2);
+        }
+        /**
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }*/
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -167,14 +199,41 @@ public class MainActivity extends AppCompatActivity{
                 .commit();
 */
         // Highlight the selected item, update the title, and close the drawer
+
+        switch (position) {
+            case 1: {
+                //setTitle("Login");
+                Fragment fragment = Fragment.instantiate(this, LoginFragment.class.getName());
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.container, fragment);
+                ft.commit();
+            return;}
+            case 2: {
+                if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+
+                    ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                }
+                else if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED)
+                {
+                    //setTitle("Map");
+                    //this creates the fragment that holds our map
+                    Fragment fragment = Fragment.instantiate(this, MapsFragment.class.getName());
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.replace(R.id.container, fragment);
+                    ft.commit();
+                }
+            return;}
+            }
+
         mDrawerList.setItemChecked(position, true);
-        setTitle("Uberesque");
         mDrawerLayout.closeDrawer(mDrawerList);
     }
     @Override
     public void setTitle(CharSequence title) {
         mTitle = title;
-        getActionBar().setTitle(mTitle);
+        this.getActionBar().setTitle(mTitle);
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -224,4 +283,39 @@ public class MainActivity extends AppCompatActivity{
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
+    public Response returnUser(String result)
+    {
+        try {
+            JSONObject jsonResponse = new JSONObject(result);
+            response.user.UserID = jsonResponse.getInt("UserID");
+            response.user.UserName = jsonResponse.getString("UserName");
+            response.user.Password = jsonResponse.getString("Password");
+            response.user.FirstName = jsonResponse.getString("FirstName");
+            response.user.LastName = jsonResponse.getString("LastName");
+            response.user.Driver = jsonResponse.getBoolean("Driver");
+            if (response.user.Driver == true) {
+                response.vehicle.Color = jsonResponse.getString("Color");
+                response.vehicle.Make = jsonResponse.getString("Make");
+                response.vehicle.Model = jsonResponse.getString("Model");
+                response.vehicle.Plate = jsonResponse.getString("Plate");
+            }
+        }catch(Exception e)
+        {
+            Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
+        }
+        return response;
+    }
+    @Override
+    public void onFragmentInteraction(Response response)
+    {
+        user=response.user;
+        if (response.user.Driver==true)
+        {
+            vehicle = response.vehicle;
+        }
+        Fragment fragment = Fragment.instantiate(this, MapsFragment.class.getName());
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.container, fragment);
+        ft.commit();
+    }
 }
