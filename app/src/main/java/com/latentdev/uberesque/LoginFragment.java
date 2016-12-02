@@ -1,5 +1,6 @@
 package com.latentdev.uberesque;
 
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -86,6 +87,17 @@ public class LoginFragment extends Fragment implements IAccessResponse{
             @Override
             public void onClick(View v) {
                 login();
+            }
+        });
+
+        link_signup.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = Fragment.instantiate(LoginFragment.super.getContext(), RegisterFragment.class.getName());
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.container, fragment);
+                ft.commit();
             }
         });
 

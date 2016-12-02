@@ -312,10 +312,18 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
         if (response.user.Driver==true)
         {
             vehicle = response.vehicle;
+            Fragment fragment = Fragment.instantiate(this, DriverMapFragment.class.getName());
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.replace(R.id.container, fragment);
+            ft.commit();
         }
-        Fragment fragment = Fragment.instantiate(this, MapsFragment.class.getName());
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.replace(R.id.container, fragment);
-        ft.commit();
+        else if (response.user.Driver==false)
+        {
+            Fragment fragment = Fragment.instantiate(this, MapsFragment.class.getName());
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.replace(R.id.container, fragment);
+            ft.commit();
+        }
+
     }
 }

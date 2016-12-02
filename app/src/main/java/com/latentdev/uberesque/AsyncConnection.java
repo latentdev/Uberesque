@@ -31,6 +31,11 @@ import java.net.URL;
         Response response;
         IAccessResponse delegate;
 
+        AsyncConnection()
+        {
+
+        }
+
         AsyncConnection(Context in_context, Activity in_activity)
         {
             context=in_context;
