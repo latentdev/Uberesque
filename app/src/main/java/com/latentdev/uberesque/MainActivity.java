@@ -155,10 +155,6 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Fragment fragment = Fragment.instantiate(this, MapsFragment.class.getName());
-                    FragmentTransaction ft = getFragmentManager().beginTransaction();
-                    ft.replace(R.id.container, fragment);
-                    ft.commit();
 
                 } else {
 
@@ -201,14 +197,14 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
         // Highlight the selected item, update the title, and close the drawer
 
         switch (position) {
-            case 1: {
+            case 0: {
                 //setTitle("Login");
                 Fragment fragment = Fragment.instantiate(this, LoginFragment.class.getName());
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.container, fragment);
                 ft.commit();
             return;}
-            case 2: {
+            case 1: {
                 if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED) {
 
@@ -219,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
                 {
                     //setTitle("Map");
                     //this creates the fragment that holds our map
-                    Fragment fragment = Fragment.instantiate(this, MapsFragment.class.getName());
+                    Fragment fragment = Fragment.instantiate(this, DriverMapFragment.class.getName());
                     FragmentTransaction ft = getFragmentManager().beginTransaction();
                     ft.replace(R.id.container, fragment);
                     ft.commit();
@@ -228,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
             }
 
         mDrawerList.setItemChecked(position, true);
-        mDrawerLayout.closeDrawer(mDrawerList);
+        mDrawerLayout.closeDrawer(DrawerLinear);
     }
     @Override
     public void setTitle(CharSequence title) {
