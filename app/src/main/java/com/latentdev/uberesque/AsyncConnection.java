@@ -98,7 +98,7 @@ import java.net.URL;
         }
 
 
-    private String downloadUrl(String myurl) throws IOException {
+    public String downloadUrl(String myurl) throws IOException {
         InputStream is = null;
 
         try {
