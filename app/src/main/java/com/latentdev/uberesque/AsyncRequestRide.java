@@ -24,6 +24,7 @@ public class AsyncRequestRide extends AsyncConnection {
         activity = in_activity;
         delegate = null;
     }
+
     @Override
     protected void onPostExecute(String result) {
         //Toast.makeText(context, result, Toast.LENGTH_LONG).show();
@@ -51,9 +52,7 @@ public class AsyncRequestRide extends AsyncConnection {
 
 
 }
-    @Override
-    public String downloadUrl(String myurl)
-    {
+    public String downloadUrl(String myurl) throws IOException {
         InputStream is = null;
 
         try {
@@ -61,7 +60,7 @@ public class AsyncRequestRide extends AsyncConnection {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(10000 /* milliseconds */);
             conn.setConnectTimeout(15000 /* milliseconds */);
-            ;
+            conn.setRequestMethod("POST");
             conn.setDoInput(true);
             // Starts the query
             conn.connect();
