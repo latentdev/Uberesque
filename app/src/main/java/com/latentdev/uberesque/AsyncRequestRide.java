@@ -6,6 +6,11 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 /**
  * Created by Laten on 12/4/2016.
  */
@@ -19,7 +24,7 @@ public class AsyncRequestRide extends AsyncConnection {
         activity = in_activity;
         delegate = null;
     }
-
+    @Override
     protected void onPostExecute(String result) {
         //Toast.makeText(context, result, Toast.LENGTH_LONG).show();
         if (delegate != null) {
@@ -43,4 +48,36 @@ public class AsyncRequestRide extends AsyncConnection {
         {
             Toast.makeText(context, "You have not assigned IApiAccessResponse delegate", Toast.LENGTH_LONG).show();
         }
-}}
+
+
+}
+    @Override
+    public String downloadUrl(String myurl)
+    {
+        InputStream is = null;
+
+        try {
+            URL url = new URL(myurl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000 /* milliseconds */);
+            conn.setConnectTimeout(15000 /* milliseconds */);
+            ;
+            conn.setDoInput(true);
+            // Starts the query
+            conn.connect();
+            int response = conn.getResponseCode();
+            //Log.d(DEBUG_TAG, "The response is: " + response);
+            is = conn.getInputStream();
+
+            // Convert the InputStream into a JSONObject
+            return readIt(is);
+
+            // Makes sure that the InputStream is closed after the app is
+            // finished using it.
+        } finally {
+            if (is != null) {
+                is.close();
+            }
+        }
+    }
+}
