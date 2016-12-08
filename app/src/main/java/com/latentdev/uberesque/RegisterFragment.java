@@ -47,7 +47,6 @@ public class RegisterFragment extends BaseFormFragment implements IAccessRespons
     User user;
     Vehicle vehicle;
 
-    private OnFragmentInteractionListener mListener;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -55,7 +54,7 @@ public class RegisterFragment extends BaseFormFragment implements IAccessRespons
 
 
     // TODO: Rename and change types and number of parameters
-    public static RegisterFragment newInstance(String param1, String param2) {
+    public static RegisterFragment newInstance() {
         RegisterFragment fragment = new RegisterFragment();
         Bundle args = new Bundle();
         return fragment;
@@ -127,31 +126,7 @@ public class RegisterFragment extends BaseFormFragment implements IAccessRespons
         });
         return view;
     }
-
-    // TODO: Rename method, update argument and hook method into UI event
-   /* public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            //mListener.onFragmentInteraction(uri);
-        }
-    }*/
-/*
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }*/
-
+    
     public void register()
     {
         if (!validate()) {
@@ -278,7 +253,7 @@ public class RegisterFragment extends BaseFormFragment implements IAccessRespons
         progressDialog.hide();
         btn_login.setEnabled(true);
     }
-    /*
+
     @Override
     public void postResult(Response asyncResult)
     {
@@ -291,24 +266,11 @@ public class RegisterFragment extends BaseFormFragment implements IAccessRespons
     {
         progressDialog.hide();
         btn_login.setEnabled(true);
-    }*/
+    }
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Response response);
     }
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    /*public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }*/
+
 }
