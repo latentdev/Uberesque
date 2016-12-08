@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 /**
@@ -26,7 +27,7 @@ import android.widget.TextView;
  * Use the {@link RegisterFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RegisterFragment extends Fragment {
+public class RegisterFragment extends BaseFormFragment implements IAccessResponse {
     EditText username;
     EditText password;
     EditText email;
@@ -42,8 +43,11 @@ public class RegisterFragment extends Fragment {
     LinearLayout car;
     TextView link_login;
     ProgressDialog progressDialog;
+    public Response response;
+    User user;
+    Vehicle vehicle;
 
-    //private OnFragmentInteractionListener mListener;
+    private OnFragmentInteractionListener mListener;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -68,7 +72,7 @@ public class RegisterFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_register, container, false);
-        username = (EditText) view.findViewById(R.id.input_username);
+        username = (EditText) view.findViewById(R.id.input_name);
         password = (EditText) view.findViewById(R.id.input_password);
         email = (EditText) view.findViewById(R.id.input_email);
         firstname = (EditText) view.findViewById(R.id.input_firstname);
@@ -98,7 +102,15 @@ public class RegisterFragment extends Fragment {
                 }
             }
         });
+
         btn_login = (AppCompatButton) view.findViewById(R.id.btn_signup);
+        btn_login.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                btn_login.setEnabled(false);
+                register();
+            }
+        });
         link_login = (TextView) view.findViewById(R.id.link_login);
         progressDialog = new ProgressDialog(getActivity());
 
@@ -122,24 +134,169 @@ public class RegisterFragment extends Fragment {
             //mListener.onFragmentInteraction(uri);
         }
     }*/
-
+/*
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        /*if (context instanceof OnFragmentInteractionListener) {
-            //mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
-        }*/
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        //mListener = null;
+        mListener = null;
+    }*/
+
+    public void register()
+    {
+        if (!validate()) {
+            onLoginFailed();
+            return;
+        }
+        btn_login.setEnabled(false);
+        user=new User();
+        user.UserName=username.getText().toString();
+        user.Password = password.getText().toString();
+        user.Email = email.getText().toString();
+        user.FirstName = firstname.getText().toString();
+        user.LastName = lastname.getText().toString();
+        user.Driver = driver.isChecked();
+        if(user.Driver==true)
+        {
+            vehicle=new Vehicle();
+            vehicle.Color = color.getText().toString();
+            vehicle.Year = Integer.parseInt(year.getText().toString());
+            vehicle.Make = make.getText().toString();
+            vehicle.Model = model.getText().toString();
+        }
+        response=new Response();
+        response.user=user;
+        response.vehicle=vehicle;
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Authenticating...");
+        progressDialog.show();
+
+        String url = "http://uberesque.azurewebsites.net/api/Account/Register?email="+response.user.Email+"&username="+response.user.UserName+"&pass="+response.user.Password+"&firstname="+user.FirstName+"&lastname="+user.LastName+"&driver="+user.Driver.toString();
+        if(response.user.Driver!=false)
+        {
+            url+="&color="+vehicle.Color+"&year="+vehicle.Year+"&make="+vehicle.Make+"&model="+vehicle.Model+"&plate="+vehicle.Plate;
+        }
+        AsyncConnection async = new AsyncConnection(this.getContext(),this.getActivity());
+        async.delegate = this;
+        async.execute(url);
+
+        //progressDialog.hide();
+        btn_login.setEnabled(true);
     }
 
+    public boolean validate() {
+        boolean valid = true;
+
+        String temp_username = username.getText().toString();
+        String temp_password = password.getText().toString();
+        String temp_email = password.getText().toString();
+        String temp_firstname = firstname.getText().toString();
+        String temp_lastname = lastname.getText().toString();
+
+        if (temp_username.isEmpty() || username.length() < 4 || username.length() > 10) {
+            username.setError("enter a valid  username");
+            valid = false;
+        } else {
+            username.setError(null);
+        }
+
+        if (temp_password.isEmpty() || password.length() < 4 || password.length() > 10) {
+            password.setError("between 4 and 10 alphanumeric characters");
+            valid = false;
+        } else {
+            password.setError(null);
+        }
+
+        if (temp_email.isEmpty()) {
+            email.setError("enter a valid email address");
+            valid = false;
+        } else {
+            email.setError(null);
+        }
+
+        if (temp_firstname.isEmpty()) {
+            firstname.setError("enter a valid first name");
+            valid = false;
+        } else {
+            firstname.setError(null);
+        }
+        if (temp_lastname.isEmpty()) {
+            lastname.setError("enter a valid last name");
+            valid = false;
+        } else {
+            lastname.setError(null);
+        }
+
+        if (driver.isChecked()) {
+            String temp_color = username.getText().toString();
+            String temp_year = password.getText().toString();
+            String temp_make = password.getText().toString();
+            String temp_model = firstname.getText().toString();
+            if (temp_color.isEmpty()) {
+                color.setError("enter a valid color");
+                valid = false;
+            } else {
+                color.setError(null);
+            }
+
+            if (temp_year.isEmpty()) {
+                year.setError("enter a valid year");
+                valid = false;
+            } else {
+                year.setError(null);
+            }
+
+            if (temp_make.isEmpty()) {
+                make.setError("enter a valid make");
+                valid = false;
+            } else {
+                make.setError(null);
+            }
+            if (temp_model.isEmpty()) {
+                model.setError("enter a valid model");
+                valid = false;
+            } else {
+                model.setError(null);
+            }
+        }
+
+        return valid;
+    }
+
+    public void onLoginFailed() {
+        Toast.makeText(super.getContext(), "Login failed", Toast.LENGTH_LONG).show();
+        progressDialog.hide();
+        btn_login.setEnabled(true);
+    }
+    /*
+    @Override
+    public void postResult(Response asyncResult)
+    {
+        mListener.onFragmentInteraction(asyncResult);
+        progressDialog.hide();
+    }
+
+    @Override
+    public void Reset()
+    {
+        progressDialog.hide();
+        btn_login.setEnabled(true);
+    }*/
+
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Response response);
+    }
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated

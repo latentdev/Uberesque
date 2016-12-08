@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "962615947766-btund280i04ejj2jp66v1ccb34e1ogp1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.latentdev.uberesque",
+            "certificate_hash": "36CACA329998D2F0D7FCFC71FEDAD7A0220EBCAB"
+          }
+        },
+        {
           "client_id": "962615947766-vum7m8j07big2v1vudpndp5077rgffrk.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "962615947766-vum7m8j07big2v1vudpndp5077rgffrk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2
