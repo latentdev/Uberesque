@@ -1,10 +1,13 @@
 package com.latentdev.uberesque;
 
+import android.*;
+import android.Manifest;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -15,6 +18,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,8 +28,13 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
-public class MainActivity extends AppCompatActivity{
+import org.json.JSONObject;
+
+
+public class MainActivity extends AppCompatActivity implements BaseFormFragment.OnFragmentInteractionListener{
 
     private String[] mMenuItems;
     private DrawerLayout mDrawerLayout;
@@ -34,18 +43,39 @@ public class MainActivity extends AppCompatActivity{
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
     private LinearLayout DrawerLinear;
+    public User user;
+    public Vehicle vehicle;
+    public Response response;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
     //this sets up what to do when our activity is first created
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        permissions();
         //set our toolbar up
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mTitle="Uberesque";
         mDrawerTitle="Options";
+        mAuth = FirebaseAuth.getInstance();
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    Log.d("FirebaseAuth", "onAuthStateChanged:signed_in:" + user.getUid());
+                } else {
+                    // User is signed out
+                    Log.d("FirebaseAuth", "onAuthStateChanged:signed_out");
+                }
+                // ...
+            }
+        };
 
         // load the strings for our navigation drawer
         mMenuItems = getResources().getStringArray(R.array.menu_items);
@@ -86,6 +116,7 @@ public class MainActivity extends AppCompatActivity{
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
+/*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,14 +124,15 @@ public class MainActivity extends AppCompatActivity{
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
+        });*/
 
+/**
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+        else if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED)
             {
                 //this creates the fragment that holds our map
@@ -108,13 +140,36 @@ public class MainActivity extends AppCompatActivity{
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.container, fragment);
                 ft.commit();
-            }
-
-        }
-
-
+            }*/
+        Fragment fragment = Fragment.instantiate(this, LoginFragment.class.getName());
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.container, fragment);
+        ft.commit();
     }
+    public void permissions()
+    {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
 
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET}, 2);
+        }
+        /**
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }*/
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -123,10 +178,6 @@ public class MainActivity extends AppCompatActivity{
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Fragment fragment = Fragment.instantiate(this, MapsFragment.class.getName());
-                    FragmentTransaction ft = getFragmentManager().beginTransaction();
-                    ft.replace(R.id.container, fragment);
-                    ft.commit();
 
                 } else {
 
@@ -149,6 +200,19 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
     /** Swaps fragments in the main content view */
     private void selectItem(int position) {
 
@@ -167,14 +231,41 @@ public class MainActivity extends AppCompatActivity{
                 .commit();
 */
         // Highlight the selected item, update the title, and close the drawer
+
+        switch (position) {
+            case 0: {
+                //setTitle("Login");
+                Fragment fragment = Fragment.instantiate(this, LoginFragment.class.getName());
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.container, fragment);
+                ft.commit();
+            return;}
+            case 1: {
+                if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+
+                    ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                }
+                else if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED)
+                {
+                    //setTitle("Map");
+                    //this creates the fragment that holds our map
+                    Fragment fragment = Fragment.instantiate(this, DriverMapFragment.class.getName());
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.replace(R.id.container, fragment);
+                    ft.commit();
+                }
+            return;}
+            }
+
         mDrawerList.setItemChecked(position, true);
-        setTitle("Uberesque");
-        mDrawerLayout.closeDrawer(mDrawerList);
+        mDrawerLayout.closeDrawer(DrawerLinear);
     }
     @Override
     public void setTitle(CharSequence title) {
         mTitle = title;
-        getActionBar().setTitle(mTitle);
+        this.getActionBar().setTitle(mTitle);
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -224,4 +315,47 @@ public class MainActivity extends AppCompatActivity{
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
+    public Response returnUser(String result)
+    {
+        try {
+            JSONObject jsonResponse = new JSONObject(result);
+            response.user.UserID = jsonResponse.getInt("UserID");
+            response.user.UserName = jsonResponse.getString("UserName");
+            response.user.Password = jsonResponse.getString("Password");
+            response.user.FirstName = jsonResponse.getString("FirstName");
+            response.user.LastName = jsonResponse.getString("LastName");
+            response.user.Driver = jsonResponse.getBoolean("Driver");
+            if (response.user.Driver == true) {
+                response.vehicle.Color = jsonResponse.getString("Color");
+                response.vehicle.Make = jsonResponse.getString("Make");
+                response.vehicle.Model = jsonResponse.getString("Model");
+                response.vehicle.Plate = jsonResponse.getString("Plate");
+            }
+        }catch(Exception e)
+        {
+            Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
+        }
+        return response;
+    }
+    @Override
+    public void onFragmentInteraction(Response response)
+    {
+        user=response.user;
+        if (response.user.Driver==true)
+        {
+            vehicle = response.vehicle;
+            Fragment fragment = Fragment.instantiate(this, DriverMapFragment.class.getName());
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.replace(R.id.container, fragment);
+            ft.commit();
+        }
+        else if (response.user.Driver==false)
+        {
+            Fragment fragment = Fragment.instantiate(this, MapsFragment.class.getName());
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.replace(R.id.container, fragment);
+            ft.commit();
+        }
+
+    }
 }

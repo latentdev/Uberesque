@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "962615947766",
+    "firebase_url": "https://woven-catwalk-149609.firebaseio.com",
+    "project_id": "woven-catwalk-149609",
+    "storage_bucket": "woven-catwalk-149609.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:962615947766:android:8420f56d76c82df4",
+        "android_client_info": {
+          "package_name": "com.latentdev.uberesque"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "962615947766-btund280i04ejj2jp66v1ccb34e1ogp1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.latentdev.uberesque",
+            "certificate_hash": "36CACA329998D2F0D7FCFC71FEDAD7A0220EBCAB"
+          }
+        },
+        {
+          "client_id": "962615947766-vum7m8j07big2v1vudpndp5077rgffrk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCazzrCWrbyWzl6jf8ibfoIFvZKLkAcmSs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "962615947766-vum7m8j07big2v1vudpndp5077rgffrk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
