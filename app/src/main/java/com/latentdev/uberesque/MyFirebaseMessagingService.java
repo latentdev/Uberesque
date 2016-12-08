@@ -1,6 +1,5 @@
 package com.latentdev.uberesque;
 
-<<<<<<< HEAD
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -8,8 +7,6 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
-=======
->>>>>>> origin/Login-to-backend
 import android.util.Log;
 import android.widget.Toast;
 
@@ -28,7 +25,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // If the application is in the foreground handle both data and notification messages here.
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated.
-<<<<<<< HEAD
+
         Log.d(TAG, "From: " + remoteMessage.getFrom());
         Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
 
@@ -59,11 +56,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 // mId allows you to update the notification later on.
         mNotificationManager.notify(1, mBuilder.build());
-=======
+
         Log.d(TAG,"From: "+remoteMessage.getFrom());
         Log.d(TAG,"Message: "+remoteMessage.getNotification().getBody());
         Toast.makeText(this, "From: " + remoteMessage.getFrom(), Toast.LENGTH_LONG).show();
         Toast.makeText(this, "Message: "+remoteMessage.getNotification().getBody(), Toast.LENGTH_LONG).show();
->>>>>>> origin/Login-to-backend
+
     }
 }
