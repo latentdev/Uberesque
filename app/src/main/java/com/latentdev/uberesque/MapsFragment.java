@@ -71,6 +71,7 @@ public class MapsFragment extends Fragment {
                 if (ContextCompat.checkSelfPermission(MapsFragment.super.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED) {
                     mMap.setMyLocationEnabled(true);
+
                 } else {
                     ActivityCompat.requestPermissions(MapsFragment.super.getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
                     if (ContextCompat.checkSelfPermission(MapsFragment.super.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
@@ -82,15 +83,15 @@ public class MapsFragment extends Fragment {
 
 
                 mMap.setMyLocationEnabled(true);
-/**
- LocationManager locationManager = (LocationManager) MapsFragment.super.getContext().getSystemService(LOCATION_SERVICE);
+
+ /*LocationManager locationManager = (LocationManager) MapsFragment.super.getContext().getSystemService(LOCATION_SERVICE);
  Criteria criteria = new Criteria();
  String provider = locationManager.getBestProvider(criteria, true);
  Location location = locationManager.getLastKnownLocation(provider);
 
  LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
  mMap.addMarker(new MarkerOptions().position(myLocation).title("location"));
- mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));*/
+ mMap.animateCamera(CameraUpdateFactory.newLatLng(myLocation));*/
             }
         });
     }

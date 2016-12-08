@@ -73,8 +73,7 @@ public class DriverMapFragment extends MapsFragment implements IAccessResponse{
             @Override
             public void onMapReady(GoogleMap googleMap) {
                 mMap = googleMap;
-                //mMap.setPadding(0,findViewById(R.id.toolbar).getHeight(),0,0);
-                //mMap.setPadding(0,(int)(56 * MapsFragment.super.getContext().getResources().getDisplayMetrics().density + 0.5f),0,0);
+
 
                 if (ContextCompat.checkSelfPermission(DriverMapFragment.super.getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED) {
@@ -89,6 +88,7 @@ public class DriverMapFragment extends MapsFragment implements IAccessResponse{
                 }
 
                 mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
                     @Override
                     public View getInfoWindow(Marker marker) {
                         return null;
@@ -115,24 +115,37 @@ public class DriverMapFragment extends MapsFragment implements IAccessResponse{
                         return v;
                     }
                 });
-                mMap.setMyLocationEnabled(true);
-/**
- LocationManager locationManager = (LocationManager) MapsFragment.super.getContext().getSystemService(LOCATION_SERVICE);
- Criteria criteria = new Criteria();
- String provider = locationManager.getBestProvider(criteria, true);
- Location location = locationManager.getLastKnownLocation(provider);
+                if (mMap != null) {
 
- LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
- mMap.addMarker(new MarkerOptions().position(myLocation).title("location"));
- mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));*/
+                    mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                        @Override
+                        public void onInfoWindowClick(Marker marker) {
+                            Iterator<Ride> rideIterator = rides.iterator();
+                            while (rideIterator.hasNext()) {
+                                Ride ride = rideIterator.next();
+                                if (ride.MarkerID.equals(marker.getId().toString()))
+                                {
+
+                                }
+
+                            }
+                        }
+                    });
+                }
+                mMap.setMyLocationEnabled(true);
+
             }
+
         });
+
     }
+
     @Override
     public void postResult(Response asyncResult)
     {
         rides=new ArrayList<>();
         Iterator<Ride> rideIterator = asyncResult.rides.iterator();
+
         while (rideIterator.hasNext()) {
             final Ride ride=rideIterator.next();
             LatLng myLocation = new LatLng(ride.Location_Lat, ride.Location_Long);

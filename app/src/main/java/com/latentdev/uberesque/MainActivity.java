@@ -116,31 +116,7 @@ public class MainActivity extends AppCompatActivity implements BaseFormFragment.
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
-/*
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
 
-/**
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        }
-        else if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED)
-            {
-                //this creates the fragment that holds our map
-                Fragment fragment = Fragment.instantiate(this, MapsFragment.class.getName());
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.container, fragment);
-                ft.commit();
-            }*/
         Fragment fragment = Fragment.instantiate(this, LoginFragment.class.getName());
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.container, fragment);
@@ -158,17 +134,6 @@ public class MainActivity extends AppCompatActivity implements BaseFormFragment.
 
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET}, 2);
         }
-        /**
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        }
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        }*/
     }
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -217,20 +182,7 @@ public class MainActivity extends AppCompatActivity implements BaseFormFragment.
     private void selectItem(int position) {
 
         /** this is where we will switch fragments based on which item is selected in the navigation drawer.**/
-       /*
-        // Create a new fragment and specify the planet to show based on position
-        Fragment fragment = new PlanetFragment();
-        Bundle args = new Bundle();
-        args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
-        fragment.setArguments(args);
 
-        // Insert the fragment by replacing any existing fragment
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, fragment)
-                .commit();
-*/
-        // Highlight the selected item, update the title, and close the drawer
 
         switch (position) {
             case 0: {
@@ -351,7 +303,7 @@ public class MainActivity extends AppCompatActivity implements BaseFormFragment.
         }
         else if (response.user.Driver==false)
         {
-            Fragment fragment = Fragment.instantiate(this, MapsFragment.class.getName());
+            Fragment fragment = Fragment.instantiate(this, RiderMapFragment.class.getName());
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.replace(R.id.container, fragment);
             ft.commit();
