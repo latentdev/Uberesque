@@ -7,6 +7,7 @@ import android.app.FragmentTransaction;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -17,6 +18,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,10 +28,13 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import org.json.JSONObject;
 
 
-public class MainActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements BaseFormFragment.OnFragmentInteractionListener{
 
     private String[] mMenuItems;
     private DrawerLayout mDrawerLayout;
@@ -41,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
     public User user;
     public Vehicle vehicle;
     public Response response;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
     //this sets up what to do when our activity is first created
     @Override
@@ -53,6 +60,22 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
         setSupportActionBar(toolbar);
         mTitle="Uberesque";
         mDrawerTitle="Options";
+        mAuth = FirebaseAuth.getInstance();
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    Log.d("FirebaseAuth", "onAuthStateChanged:signed_in:" + user.getUid());
+                } else {
+                    // User is signed out
+                    Log.d("FirebaseAuth", "onAuthStateChanged:signed_out");
+                }
+                // ...
+            }
+        };
 
         // load the strings for our navigation drawer
         mMenuItems = getResources().getStringArray(R.array.menu_items);
@@ -177,6 +200,19 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
         }
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
     /** Swaps fragments in the main content view */
     private void selectItem(int position) {
 

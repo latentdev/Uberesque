@@ -42,16 +42,14 @@ import java.util.concurrent.ExecutionException;
  * Use the {@link LoginFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LoginFragment extends Fragment implements IAccessResponse{
+public class LoginFragment extends BaseFormFragment implements IAccessResponse{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String TAG = "LoginActivity";
-    private static final int REQUEST_SIGNUP = 0;
     EditText username;
     EditText password;
     Button btn_login;
     TextView link_signup;
-    private OnFragmentInteractionListener mListener;
+    //private OnFragmentInteractionListener mListener;
     ProgressDialog progressDialog;
 
     public LoginFragment() {
@@ -110,7 +108,7 @@ public class LoginFragment extends Fragment implements IAccessResponse{
             mListener.onFragmentInteraction(uri);
         }
     }*/
-
+/*
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -126,7 +124,7 @@ public class LoginFragment extends Fragment implements IAccessResponse{
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
+    }*/
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name

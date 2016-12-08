@@ -13,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -48,7 +49,7 @@ import java.net.URL;
 
             // params comes from the execute() call: params[0] is the url.
             try {
-                return downloadUrl(urls[0]);
+                return downloadUrl(urls[0],"GET",null);
             } catch (IOException e) {
                 return "Unable to connect. URL may be invalid.";
             }
@@ -98,7 +99,7 @@ import java.net.URL;
         }
 
 
-    public String downloadUrl(String myurl) throws IOException {
+    public String downloadUrl(String myurl, String method, String json) throws IOException {
         InputStream is = null;
 
         try {
@@ -106,8 +107,24 @@ import java.net.URL;
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(10000 /* milliseconds */);
             conn.setConnectTimeout(15000 /* milliseconds */);
-            conn.setRequestMethod("GET");
+            conn.setRequestMethod(method);
             conn.setDoInput(true);
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setAllowUserInteraction(false);
+
+            if (json != null) {
+                //set the content length of the body
+                conn.setFixedLengthStreamingMode(json.getBytes().length);
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+                conn.setUseCaches(false);
+
+                //send the json as body of the request
+                OutputStream outputStream = conn.getOutputStream();
+                outputStream.write(json.getBytes("UTF-8"));
+                outputStream.close();
+            }
             // Starts the query
             conn.connect();
             int response = conn.getResponseCode();
