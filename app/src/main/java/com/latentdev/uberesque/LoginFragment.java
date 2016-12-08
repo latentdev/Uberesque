@@ -45,13 +45,11 @@ import java.util.concurrent.ExecutionException;
 public class LoginFragment extends BaseFormFragment implements IAccessResponse{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String TAG = "LoginActivity";
-    private static final int REQUEST_SIGNUP = 0;
     EditText username;
     EditText password;
     Button btn_login;
     TextView link_signup;
-    private OnFragmentInteractionListener mListener;
+    //private OnFragmentInteractionListener mListener;
     ProgressDialog progressDialog;
 
     public LoginFragment() {

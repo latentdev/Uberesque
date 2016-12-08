@@ -1,5 +1,6 @@
 package com.latentdev.uberesque;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 /**
@@ -19,8 +21,10 @@ import android.widget.TextView;
  */
 public class BaseFormFragment extends Fragment implements IAccessResponse {
 
+    ProgressDialog progressDialog;
+    Button btn_login;
 
-    private OnFragmentInteractionListener mListener;
+    protected OnFragmentInteractionListener mListener;
 
     public BaseFormFragment() {
         // Required empty public constructor
@@ -35,7 +39,7 @@ public class BaseFormFragment extends Fragment implements IAccessResponse {
      * @return A new instance of fragment BaseFormFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static BaseFormFragment newInstance(String param1, String param2) {
+    public static BaseFormFragment newInstance() {
         BaseFormFragment fragment = new BaseFormFragment();
         Bundle args = new Bundle();
 
@@ -99,11 +103,13 @@ public class BaseFormFragment extends Fragment implements IAccessResponse {
     public void postResult(Response asyncResult)
     {
         mListener.onFragmentInteraction(asyncResult);
+        progressDialog.hide();
     }
 
     @Override
     public void Reset()
     {
-
+        progressDialog.hide();
+        btn_login.setEnabled(true);
     }
 }
