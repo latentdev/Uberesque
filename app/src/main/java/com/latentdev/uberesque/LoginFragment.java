@@ -143,6 +143,7 @@ public class LoginFragment extends BaseFormFragment implements IAccessResponse{
 
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Authenticating...");
+        progressDialog.setCancelable(false);
         progressDialog.show();
 
         String url = "http://uberesque.azurewebsites.net/api/Account/Login?username="+username.getText().toString()+"&password="+password.getText().toString();

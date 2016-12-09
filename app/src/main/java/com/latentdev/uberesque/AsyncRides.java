@@ -30,7 +30,7 @@ public class AsyncRides extends AsyncConnection {
         if (delegate != null) {
             try {
                 JSONObject jsonResponse = new JSONObject(result);
-                if (jsonResponse.getBoolean("success") == true) {
+                if (jsonResponse.getBoolean("success") == true&&jsonResponse.getInt("state")==0) {
                     Response rides = new ResponseRides();
                     rides.rides=new ArrayList<>();
                     JSONArray array = jsonResponse.getJSONArray("rides");
@@ -38,6 +38,7 @@ public class AsyncRides extends AsyncConnection {
                     {
                         Ride ride = new Ride();
                         JSONObject object = array.getJSONObject(i);
+                        ride.RideID = object.getInt("RideID");
                         ride.UserName = object.getString("User");
                         ride.Location = object.getString("Location");
                         ride.Location_Lat = object.getDouble("Location_Lat");
@@ -53,6 +54,19 @@ public class AsyncRides extends AsyncConnection {
                     rides.error = jsonResponse.getString("error");
                     delegate.postResult(rides);
                 }
+                else if(jsonResponse.getBoolean("success")==true&&jsonResponse.getInt("state")==1)
+                {
+                        Response accept = new Response();
+                        accept.success = jsonResponse.getBoolean("success");
+                        accept.error = jsonResponse.getString("error");
+                    Toast.makeText(context, "Accepted Ride", Toast.LENGTH_LONG).show();
+                        delegate.Reset();
+                    }
+                else
+                    {
+                        Toast.makeText(context, jsonResponse.getString("error"), Toast.LENGTH_LONG).show();
+                    }
+
             } catch (Exception e) {
                 Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
             }
