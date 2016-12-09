@@ -133,7 +133,12 @@ public class RegisterFragment extends BaseFormFragment implements IAccessRespons
             onLoginFailed();
             return;
         }
+
         btn_login.setEnabled(false);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Authenticating...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
         user=new User();
         user.UserName=username.getText().toString();
         user.Password = password.getText().toString();
@@ -152,9 +157,7 @@ public class RegisterFragment extends BaseFormFragment implements IAccessRespons
         response=new Response();
         response.user=user;
         response.vehicle=vehicle;
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Authenticating...");
-        progressDialog.show();
+
 
         String url = "http://uberesque.azurewebsites.net/api/Account/Register?email="+response.user.Email+"&username="+response.user.UserName+"&pass="+response.user.Password+"&firstname="+user.FirstName+"&lastname="+user.LastName+"&driver="+user.Driver.toString();
         if(response.user.Driver!=false)

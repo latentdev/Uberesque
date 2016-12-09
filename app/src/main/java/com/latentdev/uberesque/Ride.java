@@ -5,6 +5,7 @@ package com.latentdev.uberesque;
  */
 
 public class Ride {
+    public int RideID;
     public String MarkerID;
     public String UserName;
     public String Location;

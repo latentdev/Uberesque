@@ -2,6 +2,7 @@ package com.latentdev.uberesque;
 
 
 import android.*;
+import android.app.Dialog;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -10,6 +11,8 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +29,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static com.latentdev.uberesque.R.id.container;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -34,6 +39,7 @@ public class DriverMapFragment extends MapsFragment implements IAccessResponse{
     List<Ride> rides;
 
     LayoutInflater inflate;
+    Dialog dialog;
     public DriverMapFragment() {
         // Required empty public constructor
     }
@@ -61,12 +67,12 @@ public class DriverMapFragment extends MapsFragment implements IAccessResponse{
     @Override
     public void prepareMap()
     {
-        MainActivity activity = (MainActivity) getActivity();
+        final MainActivity activity = (MainActivity) getActivity();
 
         String username = activity.user.UserName;
         String password = activity.user.Password;
         String url = "http://uberesque.azurewebsites.net/api/Account/Rides?username="+username+"&password="+password;
-        AsyncConnection async = new AsyncRides(this.getContext(),this.getActivity());
+        final AsyncConnection async = new AsyncRides(this.getContext(),this.getActivity());
         async.delegate = this;
         async.execute(url);
         mMapView.getMapAsync(new OnMapReadyCallback() {
@@ -119,12 +125,34 @@ public class DriverMapFragment extends MapsFragment implements IAccessResponse{
 
                     mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                         @Override
-                        public void onInfoWindowClick(Marker marker) {
-                            Iterator<Ride> rideIterator = rides.iterator();
+                        public void onInfoWindowClick(final Marker marker) {
+                            final View dialogView = inflate.inflate(R.layout.dialog_driver, null);
+                            dialog=new Dialog(getContext());
+                            final Iterator<Ride> rideIterator = rides.iterator();
                             while (rideIterator.hasNext()) {
-                                Ride ride = rideIterator.next();
+                                final Ride ride = rideIterator.next();
                                 if (ride.MarkerID.equals(marker.getId().toString()))
                                 {
+                                    TextView title = (TextView) dialogView.findViewById(R.id.user);
+                                    title.setText(ride.UserName);
+                                    TextView location = (TextView) dialogView.findViewById(R.id.location);
+                                    location.setText("Location: "+ride.Location);
+                                    TextView destination = (TextView) dialogView.findViewById(R.id.destination);
+                                    destination.setText("Destination: "+ride.Destination);
+                                    Button submit = (Button) dialogView.findViewById(R.id.btn_submit);
+                                    submit.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            EditText eta = (EditText) dialogView.findViewById(R.id.eta);
+                                            int time = Integer.parseInt(eta.getText().toString());
+                                            String url = "http://uberesque.azurewebsites.net/api/Account/AcceptRide?rideid="+ride.RideID+"&driverid="+activity.user.UserID+"&eta="+time;
+                                            AsyncConnection async = new AsyncRides(getContext(),getActivity());
+                                            async.delegate=DriverMapFragment.this;
+                                            async.execute(url);
+                                        }
+                                    });
+                                    dialog.setContentView(dialogView);
+                                    dialog.show();
 
                                 }
 
@@ -133,7 +161,6 @@ public class DriverMapFragment extends MapsFragment implements IAccessResponse{
                     });
                 }
                 mMap.setMyLocationEnabled(true);
-
             }
 
         });
@@ -160,6 +187,7 @@ public class DriverMapFragment extends MapsFragment implements IAccessResponse{
     @Override
     public void Reset()
     {
+        dialog.hide();
 
     }
 
