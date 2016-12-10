@@ -68,7 +68,6 @@ public class LoginFragment extends BaseFormFragment implements IAccessResponse{
         super.onCreate(savedInstanceState);
 
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -153,8 +152,6 @@ public class LoginFragment extends BaseFormFragment implements IAccessResponse{
 
         //progressDialog.hide();
         btn_login.setEnabled(true);
-
-
 
     }
 
